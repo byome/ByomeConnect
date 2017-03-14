@@ -19,7 +19,7 @@ namespace Oxide.Plugins {
      */
     protected override void LoadDefaultConfig() {
       PrintWarning("Creating default ByomeConnect config file.");
-      Config.Set("databaseURL", "https://YOUR-FIREBASE-APP.firebaseio.com");
+      Config.Set("databaseURL", "https://us-central1-YOUR-FIREBASE-APP.cloudfunctions.net");
       Config.Set("apiKey", "your_api_key_here");
       Config.Set("serverId", "server_id_here");
       SaveConfig();
@@ -39,7 +39,7 @@ namespace Oxide.Plugins {
     }
 
     private string requestEndpoint(string path) {
-      return Config["databaseURL"] + "/" + path + ".json?auth=" + Config["apiKey"];
+      return Config["databaseURL"] + "/" + path;
     }
 
     private void postRequest(string path, string body) {
@@ -64,23 +64,25 @@ namespace Oxide.Plugins {
 
     void OnPlayerInit(BasePlayer player) {
       var playerObject = new Dictionary<string, string> {
+        { "apiKey", Config["apiKey"] },
         { "event", "player_connected" },
         { "server", Convert.ToString(Config.Get("serverId")) },
         { "id", player.UserIDString },
         { "name", player.displayName },
         { "ipAddress", Convert.ToString(player.net.connection.ipaddress) }
       };
-      postRequest("queue/tasks", JsonConvert.SerializeObject(playerObject));
+      postRequest("playerConnected", JsonConvert.SerializeObject(playerObject));
     }
 
     void OnPlayerDisconnected(BasePlayer player, string reason) {
       var playerObject = new Dictionary<string, string> {
+        { "apiKey", Config["apiKey"] },
         { "event", "player_disconnected" },
         { "server", Convert.ToString(Config.Get("serverId")) },
         { "id", player.UserIDString },
         { "reason", reason },
       };
-      postRequest("queue/tasks", JsonConvert.SerializeObject(playerObject));
+      postRequest("playerDisconnected", JsonConvert.SerializeObject(playerObject));
     }
   }
 }
