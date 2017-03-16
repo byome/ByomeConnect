@@ -255,3 +255,4 @@ paket-files/
 certs/
 node_modules/
 generateKey.js
+.DS_Store

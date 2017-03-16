@@ -60,8 +60,22 @@ namespace Oxide.Plugins {
      * Server Hooks
      */
     void OnServerInitialized() {
-
+      var requestObject = new Dictionary<string, string> {
+        { "apiKey", Convert.ToString(Config.Get("apiKey")) },
+        { "event", "server_online" },
+        { "serverId", Convert.ToString(Config.Get("serverId")) },
+      };
+      postRequest("serverOnline", JsonConvert.SerializeObject(requestObject));
     }
+
+    // void OnServerSave() {
+    //   var requestObject = new Dictionary<string, string> {
+    //     { "apiKey", Convert.ToString(Config.Get("apiKey")) },
+    //     { "event", "server_offline" },
+    //     { "serverId", Convert.ToString(Config.Get("serverId")) },
+    //   };
+    //   postRequest("serverOffline", JsonConvert.SerializeObject(requestObject));
+    // }
 
     void OnPlayerInit(BasePlayer player) {
       var playerObject = new Dictionary<string, string> {
