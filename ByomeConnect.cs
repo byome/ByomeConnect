@@ -43,7 +43,8 @@ namespace Oxide.Plugins {
     }
 
     private void postRequest(string path, string body) {
-      webrequest.EnqueuePost(requestEndpoint(path), body, (code, response) => postRequestCallback(code, response), this);
+      var headers = new Dictionary<string, string> { { "Content-Type", "application/json" } };
+      webrequest.EnqueuePost(requestEndpoint(path), body, (code, response) => postRequestCallback(code, response), this, headers);
     }
 
     private void postRequestCallback(int code, string response) {
@@ -64,7 +65,7 @@ namespace Oxide.Plugins {
 
     void OnPlayerInit(BasePlayer player) {
       var playerObject = new Dictionary<string, string> {
-        { "apiKey", Config["apiKey"] },
+        { "apiKey", Convert.ToString(Config.Get("apiKey")) },
         { "event", "player_connected" },
         { "server", Convert.ToString(Config.Get("serverId")) },
         { "id", player.UserIDString },
@@ -76,7 +77,7 @@ namespace Oxide.Plugins {
 
     void OnPlayerDisconnected(BasePlayer player, string reason) {
       var playerObject = new Dictionary<string, string> {
-        { "apiKey", Config["apiKey"] },
+        { "apiKey", Convert.ToString(Config.Get("apiKey")) },
         { "event", "player_disconnected" },
         { "server", Convert.ToString(Config.Get("serverId")) },
         { "id", player.UserIDString },

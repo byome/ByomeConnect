@@ -1,0 +1,49 @@
+disable radiation in non rad towns
+update gather manager and stuff
+
+quarry - 1.5x
+everything but tech trash - 3x
+tech trash - 1.5x
+loot in boxes around map - higher preference for small arms (revolvers, pistol ammo)
+mp5 - 1.1x?
+
+remove tool
+
+if separated:
+supply signal drop - c4, m2s lesser, armor higher, better stuff possibly lower, ammo higher, medium tier weapons slight preference
+natural air drops - weighted towards c4, rockets, sulfur, targeting computers and cameras
+normal airdrop speed
+
+not separated:
+this would be unbalanced? would force players to fight with each other (not a bad thing for larger groups, harder on solo players)
+
+trading system:
+ - good?
+
+skip night voting
+ - 50%
+
+teleportation
+ - 10 min cooldown?
+
+cupboards and locks
+ - clans auto added (even to retroactive ones?)
+ - moderator level
+ - friend vs cupboard friend
+
+xp system for play time?
+ - good? opportunity for byome engagement
+
+redeem kits:
+ - vending machine placed down
+ - same amount of stuff between servers
+   - how to balance between wipes?
+   - limit servers for wipes
+
+prefab bases:
+ - would affect players that enjoy the building process
+ - scaffold design only?
+
+alerts:
+ - alert for raiding
+ - alert if you're killed
