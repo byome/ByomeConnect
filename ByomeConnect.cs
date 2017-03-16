@@ -67,10 +67,10 @@ namespace Oxide.Plugins {
       var playerObject = new Dictionary<string, string> {
         { "apiKey", Convert.ToString(Config.Get("apiKey")) },
         { "event", "player_connected" },
-        { "server", Convert.ToString(Config.Get("serverId")) },
-        { "id", player.UserIDString },
-        { "name", player.displayName },
-        { "ipAddress", Convert.ToString(player.net.connection.ipaddress) }
+        { "serverId", Convert.ToString(Config.Get("serverId")) },
+        { "playerId", player.UserIDString },
+        { "playerName", player.displayName },
+        { "playerIpAddress", Convert.ToString(player.net.connection.ipaddress) }
       };
       postRequest("playerConnected", JsonConvert.SerializeObject(playerObject));
     }
@@ -79,11 +79,31 @@ namespace Oxide.Plugins {
       var playerObject = new Dictionary<string, string> {
         { "apiKey", Convert.ToString(Config.Get("apiKey")) },
         { "event", "player_disconnected" },
-        { "server", Convert.ToString(Config.Get("serverId")) },
-        { "id", player.UserIDString },
+        { "serverId", Convert.ToString(Config.Get("serverId")) },
+        { "playerId", player.UserIDString },
         { "reason", reason },
       };
       postRequest("playerDisconnected", JsonConvert.SerializeObject(playerObject));
+    }
+
+    void OnPlayerSleep(BasePlayer player) {
+      var playerObject = new Dictionary<string, string> {
+        { "apiKey", Convert.ToString(Config.Get("apiKey")) },
+        { "event", "player_sleep" },
+        { "serverId", Convert.ToString(Config.Get("serverId")) },
+        { "playerId", player.UserIDString },
+      };
+      postRequest("playerSleep", JsonConvert.SerializeObject(playerObject));
+    }
+
+    void OnPlayerSleepEnded(BasePlayer player) {
+      var playerObject = new Dictionary<string, string> {
+        { "apiKey", Convert.ToString(Config.Get("apiKey")) },
+        { "event", "player_sleep_ended" },
+        { "serverId", Convert.ToString(Config.Get("serverId")) },
+        { "playerId", player.UserIDString },
+      };
+      postRequest("playerSleepEnded", JsonConvert.SerializeObject(playerObject));
     }
   }
 }
