@@ -7,6 +7,7 @@ using Oxide.Core;
 using Oxide.Core.Plugins;
 using Oxide.Game.Rust;
 using Oxide.Game.Rust.Libraries.Covalence;
+using Oxide.Core.Libraries.Covalence;
 
 namespace Oxide.Plugins {
   [Info("ByomeConnect", "byome, inc", "0.0.1")]
@@ -118,6 +119,38 @@ namespace Oxide.Plugins {
         { "playerId", player.UserIDString },
       };
       postRequest("playerSleepEnded", JsonConvert.SerializeObject(playerObject));
+    }
+
+
+    /**
+     * Commands
+     */
+    void linkAccountCallback(int code, string response, BasePlayer player) {
+      if (response == null || code != 200) {
+        Puts($"Error: {code} - {response}");
+        SendReply(player, "Failed to link accounts. Please make sure your association code is correct.");
+      } else {
+        SendReply(player, "Accounts successfully linked! Your player is now linked on all byome servers");
+      }
+    }
+
+    [ChatCommand("associate")]
+    void LinkAccount(BasePlayer player, string command, string[] args) {
+      SendReply(player, "Attempting to link accounts...");
+      var requestObject = new Dictionary<string, string> {
+        { "apiKey", Convert.ToString(Config.Get("apiKey")) },
+        { "event", "link_account" },
+        { "playerId", player.UserIDString },
+        { "associationToken", args[0] }
+      };
+      var headers = new Dictionary<string, string> { { "Content-Type", "application/json" } };
+      webrequest.EnqueuePost(
+        requestEndpoint("linkAccount"),
+        JsonConvert.SerializeObject(requestObject),
+        (code, response) => linkAccountCallback(code, response, player),
+        this,
+        headers
+      );
     }
   }
 }
