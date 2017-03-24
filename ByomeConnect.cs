@@ -69,14 +69,13 @@ namespace Oxide.Plugins {
       postRequest("serverOnline", JsonConvert.SerializeObject(requestObject));
     }
 
-    // void OnServerSave() {
-    //   var requestObject = new Dictionary<string, string> {
-    //     { "apiKey", Convert.ToString(Config.Get("apiKey")) },
-    //     { "event", "server_offline" },
-    //     { "serverId", Convert.ToString(Config.Get("serverId")) },
-    //   };
-    //   postRequest("serverOffline", JsonConvert.SerializeObject(requestObject));
-    // }
+    bool OnServerMessage(string message, string name, string color, ulong id) {
+      // Don't announce when player gets items from server.
+      if (name == "SERVER" && String.Compare(message, 0, "SERVER gave", 0, 11, false) == 1) {
+        return true;
+      }
+      return false;
+    }
 
     void OnPlayerInit(BasePlayer player) {
       var playerObject = new Dictionary<string, string> {
@@ -131,6 +130,7 @@ namespace Oxide.Plugins {
         SendReply(player, "Failed to link accounts. Please make sure your association code is correct.");
       } else {
         SendReply(player, "Accounts successfully linked! Your player is now linked on all byome servers");
+        Server.Command($"inventory.giveto {player.UserIDString} supply.signal 2");
       }
     }
 
