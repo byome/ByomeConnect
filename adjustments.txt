@@ -1,6 +1,21 @@
 disable radiation in non rad towns
 update gather manager and stuff
 
+TODO:
+ - toolcupboards fix
+ - smelting too slow
+ - more shit in supply signal drop
+ - slightly larger map
+ - seed?
+ - external walls degrading
+ - stack size for stones and stuff 150,000
+ - quarrys/fuel thing are too slow?
+ - turn off radiation
+ - Grendall99 -> reward users from this cycle (5 signals per wipe for life)
+ - num planes per player (limit airdrops)
+ - get rid of hemp and pumpkin clones
+ - if all toolcupboards allow set home
+
 quarry - 1.5x
 everything but tech trash - 3x
 tech trash - 1.5x
@@ -47,3 +62,9 @@ prefab bases:
 alerts:
  - alert for raiding
  - alert if you're killed
+
+referral:
+ - code generated as user signs up
+ - byome link goes to registration page
+ - ties in with server that user is currently on that referred you
+ - link to server referree is on

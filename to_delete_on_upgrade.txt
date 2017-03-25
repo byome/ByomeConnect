@@ -1,0 +1,10 @@
+rustserver/serverfiles/server/rust-server/oxide/data/AutoDoors.json
+rustserver/serverfiles/server/rust-server/oxide/data/BuildingOwners_backup.json
+rustserver/serverfiles/server/rust-server/oxide/data/BuildingOwners.json
+rustserver/serverfiles/server/rust-server/oxide/data/clans_data.json
+rustserver/serverfiles/server/rust-server/oxide/data/DeathNotes/PlayerSettings.json
+rustserver/serverfiles/server/rust-server/oxide/data/FriendlyFire.json
+rustserver/serverfiles/server/rust-server/oxide/data/Friends.json
+rustserver/serverfiles/server/rust-server/oxide/data/Kits_Data.json
+rustserver/serverfiles/server/rust-server/oxide/data/NTeleportation*
+rustserver/serverfiles/server/rust-server/*.sav

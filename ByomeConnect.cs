@@ -122,7 +122,7 @@ namespace Oxide.Plugins {
 
 
     /**
-     * Commands
+     * Link Account
      */
     void linkAccountCallback(int code, string response, BasePlayer player) {
       if (response == null || code != 200) {
@@ -148,6 +148,39 @@ namespace Oxide.Plugins {
         requestEndpoint("linkAccount"),
         JsonConvert.SerializeObject(requestObject),
         (code, response) => linkAccountCallback(code, response, player),
+        this,
+        headers
+      );
+    }
+
+
+    /**
+     * Byome Kit
+     */
+    void byomeKitCallback(int code, string response, BasePlayer player, string kit) {
+      if (response == null || code != 200) {
+        Puts($"Error: {code} - {response}");
+        SendReply(player, "Failed to redeem kit. Please ensure correct spelling, and that you are able to redeem the kit.");
+      } else {
+        SendReply(player, "Kit has been redeemed!");
+        Server.Command($"inv.giveplayer {player.UserIDString} {kit} 1");
+      }
+    }
+
+    [ChatCommand("byomekit")]
+    void ByomeKit(BasePlayer player, string command, string[] args) {
+      SendReply(player, "Your requested kit will be here shortly!");
+      var requestObject = new Dictionary<string, string> {
+        { "apiKey", Convert.ToString(Config.Get("apiKey")) },
+        { "event", "redeem_kit" },
+        { "playerId", player.UserIDString },
+        { "kitId", args[0] }
+      };
+      var headers = new Dictionary<string, string> { { "Content-Type", "application/json" } };
+      webrequest.EnqueuePost(
+        requestEndpoint("redeemKit"),
+        JsonConvert.SerializeObject(requestObject),
+        (code, response) => byomeKitCallback(code, response, player, args[0]),
         this,
         headers
       );
