@@ -174,6 +174,7 @@ namespace Oxide.Plugins {
         { "apiKey", Convert.ToString(Config.Get("apiKey")) },
         { "event", "redeem_kit" },
         { "playerId", player.UserIDString },
+        { "serverId", Convert.ToString(Config.Get("serverId")) },
         { "kitId", args[0] }
       };
       var headers = new Dictionary<string, string> { { "Content-Type", "application/json" } };
