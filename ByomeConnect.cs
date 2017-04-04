@@ -162,7 +162,7 @@ namespace Oxide.Plugins {
         Puts($"Error: {code} - {response}");
         SendReply(player, "Failed to redeem kit. Please ensure correct spelling, and that you are able to redeem the kit.");
       } else {
-        SendReply(player, "Kit has been redeemed!");
+        SendReply(player, "Kit has been redeemed! Type \"/byomekit (kitslughere)\" in chat to use.");
         Server.Command($"inv.giveplayer {player.UserIDString} {kit} 1");
       }
     }
