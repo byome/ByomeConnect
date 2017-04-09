@@ -56,7 +56,6 @@ namespace Oxide.Plugins {
     }
 
     private void sendRequest(Dictionary<String, String> req, String apiEvent, String apiEndpoint) {
-      req = req || new Dictionary { String, String };
       req.Add("apiKey", Convert.ToString(Config.Get("apiKey")));
       req.Add("serverId", Convert.ToString(Config.Get("serverId")));
       req.Add("event", apiEvent);
@@ -69,7 +68,7 @@ namespace Oxide.Plugins {
      * Server Hooks
      */
     void OnServerInitialized() {
-      sendRequest(null, "server_online", "serverOnline");
+      sendRequest(new Dictionary<String, String>(), "server_online", "serverOnline");
     }
 
     bool OnServerMessage(string message, string name, string color, ulong id) {
@@ -185,25 +184,25 @@ namespace Oxide.Plugins {
     void OnPlayerDie(BasePlayer player, HitInfo info) {
       var req = new Dictionary<string, string> {
         { "playerId", player.UserIDString },
-        { "perpetratorId", player.OnKilled(info).InitiatorPlayer.UserIDString }
+        { "perpetratorId", info.InitiatorPlayer.UserIDString },
       };
       sendRequest(req, "player_death", "playerDeath");
     }
 
     void OnPlayerChat(ConsoleSystem.Arg arg) {
       var req = new Dictionary<string, string> {
-        { "playerId", player.UserIDString },
+        { "playerId", Convert.ToString(arg.Connection.userid) },
         { "content", arg.FullString }
       };
       sendRequest(req, "player_chat", "playerChat");
     }
 
-    void OnCollectiblePickup(Item item, BasePlayer player) {
-      var req = new Dictionary<string, string> {
-        { "playerId", player.UserIDString },
-        { "item", item }
-      };
-      sendRequest(req, "player_collectible_pickup", "playerCollectiblePickup");
-    }
+    // void OnCollectiblePickup(Item item, BasePlayer player) {
+    //   var req = new Dictionary<string, string> {
+    //     { "playerId", player.UserIDString },
+    //     { "item", item.name }
+    //   };
+    //   sendRequest(req, "player_collectible_pickup", "playerCollectiblePickup");
+    // }
   }
 }
