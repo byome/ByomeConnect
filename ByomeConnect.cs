@@ -16,7 +16,7 @@ namespace Oxide.Plugins {
   class ByomeConnect : RustPlugin {
 
     /**
-     * Plugin Config Stuff
+     * Config
      */
     protected override void LoadDefaultConfig() {
       PrintWarning("Creating default ByomeConnect config file.");
@@ -55,18 +55,20 @@ namespace Oxide.Plugins {
       }
     }
 
+    private void sendRequest(Dictionary<String, String> req = new Dictionary { String, String }, String apiEvent, String apiEndpoint) {
+      req.Add("apiKey", Convert.ToString(Config.Get("apiKey")));
+      req.Add("serverId", Convert.ToString(Config.Get("serverId")));
+      req.Add("event", apiEvent);
+      postRequest(apiEndpoint, JsonConvert.SerializeObject(req));
+    }
+
 
 
     /**
      * Server Hooks
      */
     void OnServerInitialized() {
-      var requestObject = new Dictionary<string, string> {
-        { "apiKey", Convert.ToString(Config.Get("apiKey")) },
-        { "event", "server_online" },
-        { "serverId", Convert.ToString(Config.Get("serverId")) },
-      };
-      postRequest("serverOnline", JsonConvert.SerializeObject(requestObject));
+      sendRequest(null, "server_online", "serverOnline");
     }
 
     bool OnServerMessage(string message, string name, string color, ulong id) {
@@ -78,46 +80,34 @@ namespace Oxide.Plugins {
     }
 
     void OnPlayerInit(BasePlayer player) {
-      var playerObject = new Dictionary<string, string> {
-        { "apiKey", Convert.ToString(Config.Get("apiKey")) },
-        { "event", "player_connected" },
-        { "serverId", Convert.ToString(Config.Get("serverId")) },
+      var req = new Dictionary<string, string> {
         { "playerId", player.UserIDString },
         { "playerName", player.displayName },
         { "playerIpAddress", Convert.ToString(player.net.connection.ipaddress) }
       };
-      postRequest("playerConnected", JsonConvert.SerializeObject(playerObject));
+      sendRequest(req, "player_connected", "playerConnected");
     }
 
     void OnPlayerDisconnected(BasePlayer player, string reason) {
-      var playerObject = new Dictionary<string, string> {
-        { "apiKey", Convert.ToString(Config.Get("apiKey")) },
-        { "event", "player_disconnected" },
-        { "serverId", Convert.ToString(Config.Get("serverId")) },
+      var req = new Dictionary<string, string> {
         { "playerId", player.UserIDString },
         { "reason", reason },
       };
-      postRequest("playerDisconnected", JsonConvert.SerializeObject(playerObject));
+      sendRequest(req, "player_disconnected", "playerDisconnected");
     }
 
     void OnPlayerSleep(BasePlayer player) {
-      var playerObject = new Dictionary<string, string> {
-        { "apiKey", Convert.ToString(Config.Get("apiKey")) },
-        { "event", "player_sleep" },
-        { "serverId", Convert.ToString(Config.Get("serverId")) },
+      var req = new Dictionary<string, string> {
         { "playerId", player.UserIDString },
       };
-      postRequest("playerSleep", JsonConvert.SerializeObject(playerObject));
+      sendRequest(req, "player_sleep", "playerSleep");
     }
 
     void OnPlayerSleepEnded(BasePlayer player) {
-      var playerObject = new Dictionary<string, string> {
-        { "apiKey", Convert.ToString(Config.Get("apiKey")) },
-        { "event", "player_sleep_ended" },
-        { "serverId", Convert.ToString(Config.Get("serverId")) },
+      var req = new Dictionary<string, string> {
         { "playerId", player.UserIDString },
       };
-      postRequest("playerSleepEnded", JsonConvert.SerializeObject(playerObject));
+      sendRequest(req, "player_sleep_ended", "playerSleepEnded");
     }
 
 
@@ -185,6 +175,34 @@ namespace Oxide.Plugins {
         this,
         headers
       );
+    }
+
+
+    /**
+     * Messaging
+     */
+    void OnPlayerDie(BasePlayer player, HitInfo info) {
+      var req = new Dictionary<string, string> {
+        { "playerId", player.UserIDString },
+        { "perpetratorId", player.OnKilled(info).InitiatorPlayer.UserIDString }
+      };
+      sendRequest(req, "player_death", "playerDeath");
+    }
+
+    void OnPlayerChat(ConsoleSystem.Arg arg) {
+      var req = new Dictionary<string, string> {
+        { "playerId", player.UserIDString },
+        { "content", arg.FullString }
+      };
+      sendRequest(req, "player_chat", "playerChat");
+    }
+
+    void OnCollectiblePickup(Item item, BasePlayer player) {
+      var req = new Dictionary<string, string> {
+        { "playerId", player.UserIDString },
+        { "item", item }
+      };
+      sendRequest(req, "player_collectible_pickup", "playerCollectiblePickup");
     }
   }
 }
