@@ -55,7 +55,8 @@ namespace Oxide.Plugins {
       }
     }
 
-    private void sendRequest(Dictionary<String, String> req = new Dictionary { String, String }, String apiEvent, String apiEndpoint) {
+    private void sendRequest(Dictionary<String, String> req, String apiEvent, String apiEndpoint) {
+      req = req || new Dictionary { String, String };
       req.Add("apiKey", Convert.ToString(Config.Get("apiKey")));
       req.Add("serverId", Convert.ToString(Config.Get("serverId")));
       req.Add("event", apiEvent);
