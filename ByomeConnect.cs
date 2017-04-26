@@ -74,6 +74,12 @@ namespace Oxide.Plugins {
       Slack?.Call("Message", message, serverSlug);
     }
 
+    private void notifySlack(String message, BasePlayer player) {
+      IPlayer iplayer = (IPlayer)player;
+      String serverSlug = Convert.ToString(Config.Get("serverSlug"));
+      Slack?.Call("FancyMessage", message, iplayer, serverSlug);
+    }
+
 
 
     /**
@@ -213,8 +219,17 @@ namespace Oxide.Plugins {
         { "content", message }
       };
       sendRequest(req, "player_chat", "playerChat");
-      notifySlack($"{player.displayName}: {message}");
+      notifySlack(message, player);
     }
+
+
+    /**
+     * Bug Reporting
+     */
+    // void ReportBug(BasePlayer player, String bugMessage) {
+    //
+    // }
+
 
     // void OnCollectiblePickup(Item item, BasePlayer player) {
     //   var req = new Dictionary<string, string> {
