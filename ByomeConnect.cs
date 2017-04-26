@@ -16,6 +16,11 @@ namespace Oxide.Plugins {
   class ByomeConnect : RustPlugin {
 
     /**
+     * Plugins
+     */
+    [PluginReference] Plugin Slack;
+
+    /**
      * Config
      */
     protected override void LoadDefaultConfig() {
@@ -23,6 +28,8 @@ namespace Oxide.Plugins {
       Config.Set("databaseURL", "https://us-central1-YOUR-FIREBASE-APP.cloudfunctions.net");
       Config.Set("apiKey", "your_api_key_here");
       Config.Set("serverId", "server_id_here");
+      Config.Set("serverName", "Server Name Here");
+      Config.Set("SserverSlug", "server-slug-here");
       SaveConfig();
     }
 
@@ -62,6 +69,11 @@ namespace Oxide.Plugins {
       postRequest(apiEndpoint, JsonConvert.SerializeObject(req));
     }
 
+    private void notifySlack(String message) {
+      String serverSlug = Convert.ToString(Config.Get("serverSlug"));
+      Slack?.Call("Message", message, serverSlug);
+    }
+
 
 
     /**
@@ -76,6 +88,7 @@ namespace Oxide.Plugins {
       if (name == "SERVER" && String.Compare(message, 0, "SERVER gave", 0, 11, false) == 1) {
         return true;
       }
+      Slack?.Call("Message", message, Convert.ToString(Config.Get("serverSlug")));
       return false;
     }
 
@@ -86,6 +99,7 @@ namespace Oxide.Plugins {
         { "playerIpAddress", Convert.ToString(player.net.connection.ipaddress) }
       };
       sendRequest(req, "player_connected", "playerConnected");
+      notifySlack($"Player connected: {player.displayName}");
     }
 
     void OnPlayerDisconnected(BasePlayer player, string reason) {
@@ -94,6 +108,7 @@ namespace Oxide.Plugins {
         { "reason", reason },
       };
       sendRequest(req, "player_disconnected", "playerDisconnected");
+      notifySlack($"Player disconnected: {player.displayName}");
     }
 
     void OnPlayerSleep(BasePlayer player) {
@@ -187,14 +202,18 @@ namespace Oxide.Plugins {
         { "perpetratorId", info.InitiatorPlayer.UserIDString },
       };
       sendRequest(req, "player_death", "playerDeath");
+      notifySlack($"Player killed: {player.displayName}");
     }
 
     void OnPlayerChat(ConsoleSystem.Arg arg) {
+      BasePlayer player = (BasePlayer)arg.Connection.player;
+      string message = arg.GetString(0, "text");
       var req = new Dictionary<string, string> {
-        { "playerId", Convert.ToString(arg.Connection.userid) },
-        { "content", arg.FullString }
+        { "playerId", player.UserIDString },
+        { "content", message }
       };
       sendRequest(req, "player_chat", "playerChat");
+      notifySlack($"{player.displayName}: {message}");
     }
 
     // void OnCollectiblePickup(Item item, BasePlayer player) {
